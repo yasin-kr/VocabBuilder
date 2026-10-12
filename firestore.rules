@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validWord() {
+      let word = request.resource.data;
+      return word.keys().hasOnly([
+        'en', 'tr', 'category', 'isIrregular', 'owner', 'progress',
+        'visibility', 'enNormalized', 'searchTokens', 'createdAt', 'updatedAt'
+      ])
+      && word.keys().hasAll([
+        'en', 'tr', 'category', 'owner', 'progress', 'visibility',
+        'enNormalized', 'searchTokens', 'createdAt', 'updatedAt'
+      ])
+      && word.en is string && word.en.size() > 0 && word.en.size() <= 64
+      && word.en.matches("[A-Za-z]+(['’-][A-Za-z]+)*( [A-Za-z]+(['’-][A-Za-z]+)*)*")
+      && word.tr is string && word.tr.size() > 0 && word.tr.size() <= 64
+      && word.tr.matches("[A-Za-zÇĞİÖŞÜçğıöşü]+(['’ʼ -][A-Za-zÇĞİÖŞÜçğıöşü]+)*")
+      && word.enNormalized is string && word.enNormalized.size() <= 64
+      && word.enNormalized == word.en.replace('[’ʼ]', "'").lower()
+      && word.searchTokens is list && word.searchTokens.size() <= 4160
+      && word.category in [
+        'verb', 'participle', 'noun', 'adjective', 'pronoun', 'numerals',
+        'adverb', 'preposition', 'conjunction', 'phrasal verb', 'functional phrase'
+      ]
+      && (word.category != 'verb' || word.isIrregular is bool)
+      && word.owner == request.auth.uid
+      && word.visibility == 'public'
+      && word.progress is number && word.progress >= 0 && word.progress <= 100
+      && word.createdAt is timestamp
+      && word.updatedAt == request.time;
+    }
+
+    function hasWordClaim(wordId, normalizedEnglish) {
+      return getAfter(/databases/$(database)/documents/users/$(request.auth.uid)/wordKeysEnTr/$(normalizedEnglish)).data.wordId == wordId;
+    }
+
+    match /metadata/categories {
+      allow read: if signedIn();
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow create, update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['name', 'email', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.createdAt is timestamp;
+      allow delete: if signedIn() && request.auth.uid == userId;
+
+      match /wordKeysEnTr/{normalizedEnglish} {
+        function validClaim() {
+          let claim = request.resource.data;
+          let word = getAfter(/databases/$(database)/documents/words_en_tr/$(claim.wordId)).data;
+          return claim.keys().hasOnly(['wordId'])
+            && claim.wordId is string
+            && word.owner == userId
+            && word.enNormalized == normalizedEnglish;
+        }
+
+        allow read: if signedIn() && request.auth.uid == userId;
+        allow create: if signedIn() && request.auth.uid == userId && validClaim();
+        allow update: if signedIn() && request.auth.uid == userId && validClaim()
+          && request.resource.data.wordId == resource.data.wordId;
+        allow delete: if signedIn() && request.auth.uid == userId
+          && (!existsAfter(/databases/$(database)/documents/words_en_tr/$(resource.data.wordId))
+            || getAfter(/databases/$(database)/documents/words_en_tr/$(resource.data.wordId)).data.enNormalized != normalizedEnglish);
+      }
+    }
+
+    match /words_en_tr/{wordId} {
+      allow read: if signedIn()
+        && (resource.data.owner == request.auth.uid || resource.data.visibility == 'public');
+      allow create: if signedIn() && validWord()
+        && request.resource.data.progress == 0
+        && request.resource.data.createdAt == request.time
+        && hasWordClaim(wordId, request.resource.data.enNormalized);
+      allow update: if signedIn() && resource.data.owner == request.auth.uid
+        && validWord()
+        && request.resource.data.owner == resource.data.owner
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (request.resource.data.enNormalized == resource.data.enNormalized
+          || (hasWordClaim(wordId, request.resource.data.enNormalized)
+            && !existsAfter(/databases/$(database)/documents/users/$(request.auth.uid)/wordKeysEnTr/$(resource.data.enNormalized))));
+      allow delete: if signedIn() && resource.data.owner == request.auth.uid
+        && !existsAfter(/databases/$(database)/documents/users/$(request.auth.uid)/wordKeysEnTr/$(resource.data.enNormalized));
+    }
+  }
+}

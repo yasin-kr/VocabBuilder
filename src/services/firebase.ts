@@ -33,6 +33,7 @@ import type {
   QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import type { DataService, User, Word, WordFilters, WordInput } from '../types';
+import { MAX_TRAINING_TASKS } from '../lib/training';
 import {
   checkAnswer,
   cleanWord,
@@ -375,7 +376,8 @@ export const firebaseService: DataService = {
     if (new Set(input.map((answer) => answer._id)).size !== input.length) {
       throw new Error('Bir kelimeyi her alıştırmada yalnızca bir kez yanıtlayabilirsin.');
     }
-    if (input.length > 450) throw new Error('Bir alıştırmada en fazla 450 yanıt gönderebilirsin.');
+    if (input.length > MAX_TRAINING_TASKS)
+      throw new Error(`Bir alıştırmada en fazla ${MAX_TRAINING_TASKS} yanıt gönderebilirsin.`);
     const results = await runTransaction(db, async (transaction) => {
       const references = input.map((answer) => doc(db, 'words_en_tr', answer._id));
       const snapshots = await Promise.all(

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Answer } from '../types';
 
 const state = vi.hoisted(() => ({
   auth: {
@@ -61,6 +62,50 @@ beforeEach(() => {
 });
 
 const input = { en: 'river', tr: 'nehir', category: 'noun' };
+
+describe('Firebase training answer limits', () => {
+  const answers = (count: number): Answer[] =>
+    Array.from({ length: count }, (_, index) => ({
+      _id: `word-${index}`,
+      en: 'river',
+      tr: 'nehir',
+      task: 'en',
+    }));
+
+  it('saves all 450 answers in a single transaction at the session boundary', async () => {
+    const { firebaseService } = await import('./firebase');
+    await firebaseService.restore();
+    const transaction = {
+      get: vi.fn().mockImplementation(async (reference: { id: string }) => ({
+        id: reference.id,
+        data: () => ({ ...input, owner: 'user-a', progress: 75 }),
+      })),
+      update: vi.fn(),
+    };
+    state.runTransaction.mockImplementation(async (_db, callback) => callback(transaction));
+    const completed = answers(450);
+
+    const results = await firebaseService.answers(completed);
+
+    expect(state.runTransaction).toHaveBeenCalledOnce();
+    expect(results).toEqual(completed.map((answer) => ({ ...answer, isDone: true })));
+    expect(transaction.update.mock.calls).toEqual(
+      completed.map((answer) => [
+        { id: answer._id, path: `words_en_tr/${answer._id}` },
+        { progress: 100, updatedAt: 'server-timestamp' },
+      ]),
+    );
+  });
+
+  it('rejects 451 answers before starting any writes', async () => {
+    const { firebaseService } = await import('./firebase');
+    await firebaseService.restore();
+
+    await expect(firebaseService.answers(answers(451))).rejects.toThrow('en fazla 450 yanıt');
+
+    expect(state.runTransaction).not.toHaveBeenCalled();
+  });
+});
 
 describe('Firebase account consistency', () => {
   it('blocks every data operation and sign-out after the account changes in another tab', async () => {

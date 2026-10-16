@@ -972,6 +972,9 @@ svg {
 .results-modal > .button {
   width: 100%;
 }
+.results-modal > .button + .button {
+  margin-top: 12px;
+}
 .toast-region {
   position: fixed;
   z-index: 100;

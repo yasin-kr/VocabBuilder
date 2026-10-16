@@ -42,6 +42,8 @@ Arama 300 ms debounce ile çalışır ve baştaki/sondaki boşlukları temizler.
 
 Alıştırmalarda boş bırakılan cevaplar gönderilmez. İlerleme yanıtlanan görevlerin toplam görevlere oranıdır. Firebase/demo öğrenme puanı doğru cevapta 25 artar, yanlış cevapta 10 azalır ve 0–100 arasında tutulur. Tam öğrenilmiş kelimeler alıştırmalardan çıkarılır. Arama ve cevap kontrolü dile uygun büyük/küçük harf dönüşümü kullanır: Türkçede `I/ı` ve `İ/i`, İngilizcede `I/i` eşleşir.
 
+Büyük sözlüklerde görevler en fazla 450 kelimelik alıştırmalara ayrılır. Her alıştırma ayrı kaydedilir; sonuç ekranındaki **Sonraki alıştırma** düğmesiyle kalan görevlere devam edilir. Erken kaydetmede yalnız mevcut alıştırmadaki yanıtlanmamış kelimeler atlanmış sayılır. Sonraki alıştırmada bir hata oluşması önceki kaydedilmiş sonuçları geri almaz.
+
 ## Tasarım ve teknik kapsam
 
 Arayüz sağlanan özel tasarım referanslarının web sürümüne göre hazırlanmıştır. Herkese açık Figma bağlantısı sağlanmamıştır. Özel referans dosyaları repository içeriğine dahil edilmez; burada uygulamanın teknik kapsamı bağımsız olarak özetlenmiştir.

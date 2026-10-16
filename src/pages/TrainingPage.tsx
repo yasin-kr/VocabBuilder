@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { errorMessage, useApp } from '../app-context';
 import { api } from '../services/api';
@@ -8,11 +8,13 @@ import { Illustration } from '../components/Illustration';
 import { Progress } from '../components/Progress';
 import { Modal } from '../components/Modal';
 import { capitalize } from '../lib/locale';
+import { createTrainingSessions } from '../lib/training';
 
 export function TrainingPage() {
   const { notify, refresh } = useApp();
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [sessions, setSessions] = useState<Task[][]>([]);
+  const [sessionIndex, setSessionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retry, setRetry] = useState(0);
@@ -21,6 +23,7 @@ export function TrainingPage() {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [results, setResults] = useState<AnswerResult[] | null>(null);
   const [saving, setSaving] = useState(false);
+  const answerField = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -28,7 +31,7 @@ export function TrainingPage() {
     api
       .tasks()
       .then((data) => {
-        if (active) setTasks(data.words);
+        if (active) setSessions(createTrainingSessions(data.words));
       })
       .catch((error) => {
         if (active) setError(errorMessage(error));
@@ -40,6 +43,11 @@ export function TrainingPage() {
       active = false;
     };
   }, [retry]);
+  useEffect(() => {
+    if (!loading && results === null) answerField.current?.focus();
+  }, [sessionIndex, loading, results]);
+  const tasks = sessions[sessionIndex] ?? [];
+  const hasNextSession = sessionIndex + 1 < sessions.length;
   const task = tasks[index];
   const withCurrentAnswer = () => {
     if (!answer.trim() || !task) return answers;
@@ -73,6 +81,13 @@ export function TrainingPage() {
     } finally {
       setSaving(false);
     }
+  };
+  const nextSession = () => {
+    setSessionIndex((value) => value + 1);
+    setIndex(0);
+    setAnswer('');
+    setAnswers([]);
+    setResults(null);
   };
   if (loading)
     return (
@@ -117,9 +132,16 @@ export function TrainingPage() {
     <main id="main-content" className="container training-page">
       <h1 className="sr-only">Kelime alıştırması</h1>
       <div className="training-progress">
-        <span className="training-step">
-          Kelime {index + 1} / {tasks.length}
-        </span>
+        <div className="training-step">
+          {sessions.length > 1 && (
+            <p>
+              Alıştırma {sessionIndex + 1} / {sessions.length}
+            </p>
+          )}
+          <p>
+            Kelime {index + 1} / {tasks.length}
+          </p>
+        </div>
         <Progress
           value={(answerCount / tasks.length) * 100}
           label={String(tasks.length - answerCount)}
@@ -142,9 +164,10 @@ export function TrainingPage() {
               {task.task === 'en' ? 'İngilizce' : 'Türkçe'}
             </label>
             <textarea
+              ref={answerField}
               id="training-answer"
               lang={task.task}
-              key={index}
+              key={`${sessionIndex}-${index}`}
               autoFocus
               placeholder={
                 task.task === 'en' ? 'İngilizce karşılığını yazın' : 'Türkçe karşılığını yazın'
@@ -226,6 +249,11 @@ export function TrainingPage() {
               <Illustration variant="book" />
             </div>
           </div>
+          {hasNextSession && (
+            <button className="button button-light" onClick={nextSession}>
+              Sonraki alıştırma <Icon name="arrow-right" size={20} />
+            </button>
+          )}
           <button className="button button-light" onClick={() => navigate('/dictionary')}>
             Sözlüğe dön <Icon name="arrow-right" size={20} />
           </button>

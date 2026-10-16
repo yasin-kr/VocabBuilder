@@ -290,6 +290,102 @@ test('training saves answers, skips blank entries, and persists word progress', 
   expect(progress).toEqual({ apple: 100, beautiful: 40 });
 });
 
+for (const taskCount of [451, 901]) {
+  test(`${taskCount} training tasks continue in sessions of at most 450 without replaying answers`, async ({
+    page,
+  }) => {
+    await enterDemo(page);
+    const words = Array.from({ length: taskCount }, (_, index) => {
+      const suffix = String.fromCharCode(
+        97 + Math.floor(index / 676),
+        97 + (Math.floor(index / 26) % 26),
+        97 + (index % 26),
+      );
+      return {
+        _id: `session-word-${index}`,
+        en: `word ${suffix}`,
+        tr: `kelime ${suffix}`,
+        category: 'noun',
+        progress: 0,
+        owner: 'demo-user',
+      };
+    });
+    await page.evaluate(({ key, values }) => localStorage.setItem(key, JSON.stringify(values)), {
+      key: wordsKey,
+      values: words,
+    });
+    await page.goto('/training');
+
+    for (let offset = 0; offset < taskCount; offset += 450) {
+      const sessionSize = Math.min(450, taskCount - offset);
+      await test.step(`Save the session beginning at task ${offset + 1}`, async () => {
+        await expect(
+          page.getByText(`Alıştırma ${offset / 450 + 1} / ${Math.ceil(taskCount / 450)}`, {
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(page.getByText(`Kelime 1 / ${sessionSize}`, { exact: true })).toBeVisible();
+        await expect(page.getByRole('textbox', { name: 'İngilizceye çevir' })).toHaveValue('');
+        await expect(page.getByRole('textbox', { name: 'İngilizceye çevir' })).toBeFocused();
+        await expect(page.getByRole('progressbar', { name: 'Alıştırma ilerlemesi' })).toHaveText(
+          String(sessionSize),
+        );
+        await expect(
+          page.getByText(`Kelime ${words[offset].tr.slice('kelime '.length)}`, { exact: true }),
+        ).toBeVisible();
+        await page.getByRole('textbox', { name: 'İngilizceye çevir' }).fill(words[offset].en);
+        if (sessionSize > 1) {
+          await page.getByRole('button', { name: 'Sonraki', exact: true }).click();
+          await expect(page.getByText(`Kelime 2 / ${sessionSize}`, { exact: true })).toBeVisible();
+          await expect(page.getByRole('textbox', { name: 'Türkçeye çevir' })).toHaveValue('');
+        } else {
+          await expect(page.getByRole('button', { name: 'Sonraki', exact: true })).toHaveCount(0);
+        }
+        await page.getByRole('button', { name: 'Kaydet', exact: true }).click();
+        const results = page.getByRole('dialog', { name: 'Tebrikler' });
+        await expect(results).toBeVisible();
+        await expect(results).toContainText('1 yanıttan 1 tanesi doğru');
+        if (sessionSize > 1)
+          await expect(results).toContainText(`${sessionSize - 1} kelime atlandı`);
+        else await expect(results).not.toContainText('kelime atlandı');
+
+        const continueButton = results.getByRole('button', {
+          name: 'Sonraki alıştırma',
+          exact: true,
+        });
+        if (offset + sessionSize < taskCount) {
+          await continueButton.click();
+          await expect(results).not.toBeVisible();
+          await expect(page).toHaveURL(/\/training$/);
+        } else {
+          await expect(continueButton).toHaveCount(0);
+          await results.getByRole('button', { name: 'Sözlüğe dön' }).click();
+          await expect(page).toHaveURL(/\/dictionary$/);
+        }
+      });
+    }
+
+    const saved = await page.evaluate((key) => {
+      const stored = JSON.parse(localStorage.getItem(key) ?? '[]') as Array<{
+        _id: string;
+        progress: number;
+      }>;
+      return {
+        ids: stored.map((word) => word._id),
+        progressed: stored
+          .filter((word) => word.progress !== 0)
+          .map((word) => ({ _id: word._id, progress: word.progress })),
+      };
+    }, wordsKey);
+    expect(saved.ids).toEqual(words.map((word) => word._id));
+    expect(saved.progressed).toEqual(
+      words
+        .filter((_, index) => index % 450 === 0)
+        .map((word) => ({ _id: word._id, progress: 25 })),
+    );
+  });
+}
+
 test('empty training opens Add word and the final task offers Save without Next', async ({
   page,
 }) => {

@@ -48,15 +48,17 @@ Büyük sözlüklerde görevler en fazla 450 kelimelik alıştırmalara ayrılı
 
 ## Tasarım ve teknik kapsam
 
-Arayüz sağlanan özel tasarım referanslarının web sürümüne göre hazırlanmıştır. Herkese açık Figma bağlantısı sağlanmamıştır. Özel referans dosyaları repository içeriğine dahil edilmez; burada uygulamanın teknik kapsamı bağımsız olarak özetlenmiştir.
+Teknik görevde paylaşılan tasarım referansı: [VocabBuilder — Figma](https://www.figma.com/file/XRhVBdCX1wPyzCRA567kud/VocabBuilder?type=design&node-id=0-1&mode=design).
 
-CSS mobile-first yazılmıştır: 320 px'den itibaren akışkan, 375 px mobil, 768 px tablet, 1440 px masaüstü. Mobilde menü çekmeceye dönüşür, Sözlük kategori sütunu ve ilerleme yüzdesi gizlenir. Alıştırma alanları mobil/tablette alt alta, masaüstünde yan yanadır.
+Arayüz, sağlanan tasarım ekran görüntüleri temel alınarak hazırlanmıştır. Özel referans dosyaları ve özgün gereksinim belgesi repository içeriğine dahil edilmez. Uygulanan teknik kapsam bu README'nin [Ekranlar ve davranışlar](#ekranlar-ve-davranışlar), [Firebase kurulumu](#firebase-kurulumu) ve [Dil çifti ve servis uyumluluğu](#dil-çifti-ve-servis-uyumluluğu) bölümlerinde özetlenmiştir.
+
+CSS mobile-first yazılmıştır: 320 px'den itibaren akışkan, 375 px mobil, 768 px tablet, 1440 px masaüstü. Mobil ve tablette menü çekmeceye dönüşür. Mobilde Sözlük kategori sütunu ve ilerleme yüzdesi gizlenir. Alıştırma alanları mobil/tablette alt alta, masaüstünde yan yanadır.
 
 Menü kısa ve yatay ekranlarda dikey kaydırılabilir; çizim bağlantıların altında kalır. 568×320 ve 667×375 dahil altı mobil/tablet boyutunda menü bağlantıları, çıkış düğmesine erişim ve kısa ekran kaydırması tarayıcı testiyle doğrulanır.
 
 Öğrenci, kitap ve çalışma kağıdı çizimleri özgün SVG bileşenleridir; tasarım ekran görüntülerinden alınmış raster dosyalar kullanılmaz. SVG'ler yüksek piksel yoğunluklarında keskin kalır ve ek retina bitmap yüklemesi gerektirmez. Firebase kodu gerektiğinde dinamik olarak yüklenir. Fontlar uygulamayla birlikte sunulur, üçüncü taraf font isteği yapılmaz.
 
-Teknik görevdeki yedi karakterli parola kuralı korunur: altı ardışık Latin harfi ve bir rakam. İngilizce kelime desenindeki kaçışlı yıldız yazım hatası, kelime/ifade kabul eden tam eşleşme olarak uygulanmıştır. İngilizce ve Türkçe alanlar en çok 64 karakterdir; Türkçe alan `ç, ğ, ı, İ, ö, ş, ü` harflerini destekler. Kullanıcının dil değişikliği isteği doğrultusunda veri modeli `en` ve `tr`, görev dili ise `en | tr` olarak uygulanmıştır.
+Teknik görevdeki yedi karakterli parola kuralı korunur: altı ardışık Latin harfi ve bir rakam. İngilizce alan tek kelime veya boşluklarla ayrılan ifadeleri kabul eder; sözcüklerin içinde kesme işareti ve kısa çizgi kullanılabilir. İngilizce ve Türkçe alanlar en çok 64 karakterdir; Türkçe alan `ç, ğ, ı, İ, ö, ş, ü` harflerini destekler. Kullanıcının dil değişikliği isteği doğrultusunda veri modeli `en` ve `tr`, görev dili ise `en | tr` olarak uygulanmıştır.
 
 ## Firebase kurulumu
 

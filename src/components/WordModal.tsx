@@ -59,7 +59,9 @@ export function WordModal({ word, onClose }: { word?: Word; onClose: () => void 
       titleId="word-modal-title"
       className={`word-modal ${word ? 'edit-modal' : ''}`}
     >
-      <h2 id="word-modal-title">{word ? 'Kelimeyi düzenle' : 'Kelime ekle'}</h2>
+      <h2 id="word-modal-title" className={word ? 'sr-only' : undefined}>
+        {word ? 'Kelimeyi düzenle' : 'Kelime ekle'}
+      </h2>
       {!word && (
         <p className="modal-intro">
           Sözlüğünüze yeni kelimeler ekleyerek kelime dağarcığınızı geliştirin ve öğrendiklerinizi

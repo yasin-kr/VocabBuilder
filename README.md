@@ -56,7 +56,9 @@ CSS mobile-first yazılmıştır: 320 px'den itibaren akışkan, 375 px mobil, 7
 
 Menü kısa ve yatay ekranlarda dikey kaydırılabilir; çizim bağlantıların altında kalır. 568×320 ve 667×375 dahil altı mobil/tablet boyutunda menü bağlantıları, çıkış düğmesine erişim ve kısa ekran kaydırması tarayıcı testiyle doğrulanır.
 
-Öğrenci, kitap ve çalışma kağıdı çizimleri özgün SVG bileşenleridir; tasarım ekran görüntülerinden alınmış raster dosyalar kullanılmaz. SVG'ler yüksek piksel yoğunluklarında keskin kalır ve ek retina bitmap yüklemesi gerektirmez. Firebase kodu gerektiğinde dinamik olarak yüklenir. Fontlar uygulamayla birlikte sunulur, üçüncü taraf font isteği yapılmaz.
+Öğrenci, kitap ve çalışma kâğıdı için referanstaki 3D çizimlerle eşleşen şeffaf PNG dosyaları kullanılır. Görseller `public/illustrations/` altında yerel olarak sunulur; öğrenci çizimi mobil ve geniş ekran sürümleri arasında `picture` ile seçilir, yüksek piksel yoğunluğu için `srcset` kullanılır. Kitap ve çalışma kâğıdı ihtiyaç duyulduğunda yüklenir. [3D görsel dosyalarının alındığı kaynak](https://github.com/andrii-zhygalko/lexi_grow/tree/39bb2cf628e03281682817527092eb770ebc8874/public/images).
+
+İkonlar SVG sprite üzerinden yüklenir. Firebase kodu gerektiğinde dinamik olarak yüklenir. Fontlar uygulamayla birlikte sunulur, üçüncü taraf font isteği yapılmaz.
 
 Teknik görevdeki yedi karakterli parola kuralı korunur: altı ardışık Latin harfi ve bir rakam. İngilizce alan tek kelime veya boşluklarla ayrılan ifadeleri kabul eder; sözcüklerin içinde kesme işareti ve kısa çizgi kullanılabilir. İngilizce ve Türkçe alanlar en çok 64 karakterdir; Türkçe alan `ç, ğ, ı, İ, ö, ş, ü` harflerini destekler. Kullanıcının dil değişikliği isteği doğrultusunda veri modeli `en` ve `tr`, görev dili ise `en | tr` olarak uygulanmıştır.
 

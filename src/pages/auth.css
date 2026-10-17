@@ -4,7 +4,7 @@
   flex-direction: column;
   width: 100%;
   margin: 0 auto;
-  padding: 8px 0 32px;
+  padding: 0 0 32px;
 }
 
 .auth-content {
@@ -14,9 +14,14 @@
 
 .auth-panel {
   width: 100%;
+  min-height: calc(100svh - 263px);
   padding: 32px 16px;
   border-radius: 24px;
-  background: #edf1ef;
+  background: #edf0ef;
+}
+
+.auth-page--login .auth-panel {
+  min-height: calc(100svh - 333px);
 }
 
 .auth-panel h1 {
@@ -29,10 +34,14 @@
 }
 
 .auth-description {
-  margin: 0 0 24px;
+  margin: 0 0 12px;
   color: #44464a;
   font-size: 16px;
   line-height: 1.5;
+}
+
+.auth-page--login .auth-description {
+  margin-bottom: 36px;
 }
 
 .auth-form {
@@ -125,7 +134,7 @@
 .auth-submit.button {
   width: 100%;
   min-height: 56px;
-  margin-top: 10px;
+  margin-top: 18px;
   border: 0;
   border-radius: 30px;
   background: #85aa9f;
@@ -149,7 +158,7 @@
   display: block;
   width: fit-content;
   margin: 16px auto 0;
-  padding: 4px;
+  padding: 0;
   color: #646c68;
   font-size: 16px;
   font-weight: 700;
@@ -198,14 +207,14 @@
 .auth-hero {
   order: 1;
   width: 100%;
-  padding: 0 16px 42px;
+  padding: 0 16px 4px;
   text-align: center;
 }
 
 .auth-illustration {
   width: 247px;
-  height: 180px;
-  margin: 0 auto 20px;
+  height: 191px;
+  margin: 0 auto;
 }
 
 .auth-illustration > * {
@@ -220,7 +229,7 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  margin: 0;
+  margin: 9px 0 0;
   color: #44464a;
   font-size: 13px;
   line-height: 24px;
@@ -231,7 +240,12 @@
   display: none;
 }
 
-.auth-sr-only {
+.auth-page--login .auth-hero {
+  padding-bottom: 41px;
+}
+
+.auth-sr-only,
+.auth-field-help {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -240,6 +254,15 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.auth-field:focus-within .auth-field-help {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
 }
 
 @media (min-width: 375px) {
@@ -258,18 +281,34 @@
     display: flex;
   }
   .auth-page {
+    isolation: isolate;
     min-height: calc(100svh - 88px);
     max-width: 768px;
-    padding: 112px 70px 64px;
+    padding: 116px 70px 104px;
+  }
+
+  .auth-page::before {
+    position: fixed;
+    z-index: -1;
+    right: 0;
+    bottom: 0;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(ellipse at bottom right, #85aa9f4d, #85aa9f00 70%);
+    pointer-events: none;
+    content: '';
   }
 
   .auth-content {
     order: 1;
   }
 
-  .auth-panel {
+  .auth-panel,
+  .auth-page--login .auth-panel {
+    min-height: 0;
     padding: 48px 64px;
     border-radius: 30px;
+    background: #edf1f0;
   }
 
   .auth-panel h1 {
@@ -277,7 +316,8 @@
     font-size: 40px;
   }
 
-  .auth-description {
+  .auth-description,
+  .auth-page--login .auth-description {
     margin-bottom: 32px;
     font-size: 20px;
     line-height: 1.5;
@@ -293,10 +333,11 @@
     font-size: 18px;
   }
 
-  .auth-hero {
+  .auth-hero,
+  .auth-page--login .auth-hero {
     order: 2;
     margin-top: auto;
-    padding: 64px 0 0;
+    padding: 12px 0 0;
   }
 
   .auth-illustration {
@@ -304,6 +345,7 @@
   }
 
   .auth-tagline {
+    margin-top: 0;
     font-size: 16px;
     gap: 10px;
   }
@@ -313,36 +355,36 @@
   .auth-page {
     flex-direction: row;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 72px;
+    justify-content: flex-start;
+    gap: 82px;
     min-height: calc(100svh - 88px);
     max-width: 1240px;
     padding: 40px 0 48px;
-  }
-
-  .auth-page--login {
-    padding-top: 90px;
   }
 
   .auth-content {
     flex: 0 0 628px;
   }
 
-  .auth-hero {
-    flex: 1;
-    min-width: 0;
-    margin: 80px 0 0;
-    padding: 0;
+  .auth-page--login .auth-content {
+    margin-top: 50px;
   }
 
+  .auth-hero,
   .auth-page--login .auth-hero {
-    margin-top: 30px;
+    flex: 0 0 498px;
+    min-width: 0;
+    margin: 38px 0 0;
+    padding: 0;
   }
 
   .auth-illustration {
     display: block;
-    width: 100%;
-    height: 360px;
-    margin-bottom: 32px;
+    width: 498px;
+    height: 435px;
+  }
+
+  .auth-tagline {
+    margin-top: 20px;
   }
 }

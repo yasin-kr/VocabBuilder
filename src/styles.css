@@ -64,6 +64,17 @@ button {
 svg {
   flex-shrink: 0;
 }
+.illustration {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+picture.illustration > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .icon {
   display: inline-block;
   vertical-align: middle;
@@ -267,7 +278,7 @@ svg {
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 40px;
   margin-bottom: 32px;
 }
 .filters {
@@ -382,7 +393,7 @@ svg {
 }
 .words-table th {
   padding: 16px 12px;
-  background: #eaf0ee;
+  background: #edf1f0;
   font-size: 14px;
   font-weight: 500;
   vertical-align: middle;
@@ -409,6 +420,7 @@ svg {
   height: 70px;
   padding: 16px 12px;
   font-size: 14px;
+  font-weight: 500;
   line-height: 20px;
   vertical-align: middle;
   overflow-wrap: anywhere;
@@ -444,21 +456,24 @@ svg {
   padding-left: 2px;
   padding-right: 2px;
 }
+.words-table td.col-actions {
+  padding-block: 0;
+}
 .words-table .col-progress {
   padding-inline: 6px;
   text-align: center;
 }
 .table-all .col-en {
-  width: 28%;
+  width: 26.24%;
 }
 .table-all .col-tr {
-  width: 30%;
+  width: 33.82%;
 }
 .table-all .col-category {
-  width: 29%;
+  width: 28.86%;
 }
 .table-all .col-actions {
-  width: 13%;
+  width: 11.08%;
 }
 .table-all td,
 .table-all th {
@@ -608,7 +623,7 @@ svg {
   background: #fcfcfc;
   border-radius: 16px;
 }
-.empty-state > svg:not(.icon) {
+.empty-state > .illustration {
   width: 160px;
   height: 140px;
 }
@@ -665,7 +680,14 @@ svg {
   color: #fff;
 }
 .word-modal .select-wrap {
-  max-width: 210px;
+  max-width: none;
+}
+.word-modal {
+  padding-bottom: 48px;
+}
+.word-modal .modal-actions .button {
+  min-height: 48px;
+  padding: 11px 12px;
 }
 .word-modal .select-wrap select {
   color: #fff;
@@ -744,11 +766,11 @@ svg {
   padding-inline: 12px;
 }
 .edit-modal h2 {
-  margin-bottom: 28px;
+  margin: 0;
 }
 .menu-drawer {
   inset: 0 0 0 auto;
-  width: 210px;
+  width: 185px;
   max-width: 80vw;
   height: 100dvh;
   max-height: none;
@@ -788,24 +810,27 @@ svg {
   flex-shrink: 0;
   align-items: flex-start;
   flex-direction: column;
-  gap: 12px;
-  margin: clamp(24px, calc(100dvh - 600px), 142px) 0 24px 12px;
+  gap: 28px;
+  margin: clamp(24px, calc(100dvh - 646px), 166px) 0 24px;
 }
 .drawer-nav .nav-link {
-  padding: 10px 16px;
+  min-height: 20px;
+  padding: 0;
 }
 .drawer-nav .nav-link.active {
+  padding: 12px 20px;
   background: #fcfcfc;
   color: #121417;
 }
 .drawer-nav .text-button {
-  padding: 6px 16px;
+  padding: 0;
   font-size: 14px;
+  line-height: 20px;
 }
 .drawer-illustration {
-  align-self: center;
-  width: 290px;
-  margin: auto 0 4px;
+  align-self: flex-start;
+  width: 360px;
+  margin: auto 0 -16px -94px;
   pointer-events: none;
 }
 .training-page {
@@ -816,7 +841,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 .training-step {
   color: var(--muted);
@@ -901,9 +926,11 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 80px;
+  margin-top: 116px;
 }
 .training-actions .button-secondary {
+  min-height: 24px;
+  padding: 0;
   border: 0;
 }
 .empty-training {
@@ -911,22 +938,22 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 32px;
-  padding-top: 60px;
+  padding-top: 80px;
   padding-bottom: 32px;
 }
-.empty-training > svg {
+.empty-training > .illustration {
   width: 200px;
   height: 200px;
 }
 .empty-training h1 {
   margin-bottom: 16px;
-  font-size: 20px;
-  line-height: 28px;
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 500;
 }
 .empty-training p {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 20px;
   color: #3e4246;
 }
 .empty-training-actions {
@@ -936,6 +963,8 @@ svg {
   margin-top: 48px;
 }
 .empty-training-actions .button-secondary {
+  min-height: 24px;
+  padding: 0;
   border: 0;
 }
 .results-modal h2 {
@@ -970,7 +999,7 @@ svg {
   font-size: 16px;
   overflow-wrap: anywhere;
 }
-.results-columns svg {
+.results-columns .illustration {
   width: 100%;
   height: 140px;
   margin-top: 20px;
@@ -1101,10 +1130,10 @@ svg {
     font-size: 11px;
   }
   .words-page {
-    padding-top: 64px;
+    padding-top: 80px;
   }
   .dashboard {
-    gap: 28px;
+    gap: 30px;
     margin-bottom: 28px;
   }
   .filters {
@@ -1138,34 +1167,35 @@ svg {
     display: table-cell;
   }
   .table-own .col-en {
-    width: 21%;
+    width: 23.8%;
   }
   .table-own .col-tr {
-    width: 24%;
+    width: 25.3%;
   }
   .table-own .col-category {
-    width: 22%;
+    width: 22.6%;
   }
   .table-own .col-progress {
-    width: 24%;
+    width: 18.26%;
   }
   .table-own .col-actions {
-    width: 9%;
+    width: 10.04%;
   }
   .table-all .col-en {
-    width: 26%;
+    width: 26.95%;
   }
   .table-all .col-tr {
-    width: 27%;
+    width: 26.95%;
   }
   .table-all .col-category {
-    width: 24%;
+    width: 23.95%;
   }
   .table-all .col-actions {
-    width: 23%;
+    width: 22.15%;
   }
   .words-table th,
   .table-all th {
+    background: #f3f7f6;
     padding: 22px 18px;
     font-size: 18px;
     height: 72px;
@@ -1234,6 +1264,17 @@ svg {
   .modal h2 {
     margin-bottom: 20px;
     font-size: 40px;
+    line-height: 48px;
+  }
+  .word-modal:not(.edit-modal) {
+    padding-block: 48px;
+  }
+  .word-modal .select-wrap {
+    max-width: 204px;
+  }
+  .word-modal .modal-actions .button {
+    min-height: 56px;
+    padding: 15px 12px;
   }
   .modal-intro {
     margin-bottom: 32px;
@@ -1302,17 +1343,18 @@ svg {
     max-width: 140px;
   }
   .drawer-nav {
-    margin-left: 28px;
+    margin-top: clamp(24px, calc(100dvh - 854px), 170px);
   }
   .drawer-illustration {
-    width: 360px;
-    margin-bottom: 40px;
+    width: 498px;
+    margin-bottom: -20px;
+    margin-left: -114px;
   }
   .training-page {
     padding-top: 64px;
   }
   .training-progress {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .progress-training .progress-ring {
     width: 58px;
@@ -1348,7 +1390,13 @@ svg {
     line-height: 30px;
   }
   .language-label {
+    top: 22px;
+    bottom: auto;
     font-size: 16px;
+  }
+  .training-answer textarea,
+  .training-prompt p {
+    padding-right: 138px;
   }
   .language-label .icon {
     width: 32px;
@@ -1364,6 +1412,8 @@ svg {
     font-size: 18px;
   }
   .training-actions .button-secondary {
+    min-height: 56px;
+    padding: 15px 30px;
     border: 1px solid var(--green);
   }
   .training-step {
@@ -1373,29 +1423,33 @@ svg {
     padding-top: 140px;
     gap: 40px;
   }
-  .empty-training > svg {
-    width: 230px;
-    height: 230px;
+  .empty-training > .illustration {
+    width: 265px;
+    height: 282px;
   }
   .empty-training > div {
     max-width: 581px;
   }
   .empty-training h1 {
+    margin-bottom: 32px;
     font-size: 20px;
     line-height: 30px;
   }
   .empty-training p {
     font-size: 16px;
+    line-height: 24px;
   }
   .empty-training-actions {
     flex-direction: row;
-    margin-top: 32px;
+    margin-top: 64px;
     gap: 10px;
   }
   .empty-training-actions .button {
     min-width: 203px;
   }
   .empty-training-actions .button-secondary {
+    min-height: 56px;
+    padding: 15px 30px;
     border: 1px solid var(--green);
   }
   .results-modal {
@@ -1408,7 +1462,7 @@ svg {
   .results-columns h3 {
     font-size: 16px;
   }
-  .results-columns svg {
+  .results-columns .illustration {
     height: 165px;
   }
   .toast-region {
@@ -1439,7 +1493,7 @@ svg {
     gap: 12px;
   }
   .words-page {
-    padding-top: 64px;
+    padding-top: 80px;
   }
   .dashboard {
     flex-direction: row;
@@ -1470,31 +1524,31 @@ svg {
     height: 32px;
   }
   .table-own .col-en {
-    width: 25%;
+    width: 23.26%;
   }
   .table-own .col-tr {
-    width: 25%;
+    width: 22.76%;
   }
   .table-own .col-category {
-    width: 21%;
+    width: 21.59%;
   }
   .table-own .col-progress {
-    width: 22%;
+    width: 21.1%;
   }
   .table-own .col-actions {
-    width: 7%;
+    width: 11.29%;
   }
   .table-all .col-en {
-    width: 28%;
+    width: 30.9%;
   }
   .table-all .col-tr {
-    width: 29%;
+    width: 30.23%;
   }
   .table-all .col-category {
-    width: 20%;
+    width: 21.59%;
   }
   .table-all .col-actions {
-    width: 23%;
+    width: 17.28%;
   }
   .words-table .col-progress {
     text-align: left;
@@ -1538,14 +1592,6 @@ svg {
   .training-prompt {
     border-radius: 0 8px 8px 0;
   }
-  .language-label {
-    bottom: auto;
-    top: 22px;
-  }
-  .training-answer textarea,
-  .training-prompt p {
-    padding-right: 138px;
-  }
   .training-actions {
     margin-top: 80px;
   }
@@ -1554,10 +1600,6 @@ svg {
     justify-content: center;
     padding-top: 193px;
     gap: 32px;
-  }
-  .empty-training > svg {
-    width: 300px;
-    height: 300px;
   }
 }
 

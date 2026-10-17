@@ -2,6 +2,8 @@
 
 Türkçe arayüzlü İngilizce–Türkçe kelime öğrenme uygulaması. Kişisel sözlüğünü oluştur, diğer öğrencilerin kelimelerini keşfet ve iki yönlü çeviri alıştırmalarıyla ilerlemeni takip et.
 
+**Canlı uygulama:** [vocabbuilder-yasin-kr.web.app](https://vocabbuilder-yasin-kr.web.app)
+
 ## Yerel çalıştırma
 
 Node.js 20.19+ veya 22.12+ gerekir.
@@ -69,7 +71,7 @@ npx -y firebase-tools@latest deploy --only "auth,firestore" --project vocabbuild
 
 4. İndekslerin hazır olmasını bekleyin; ardından `.env.local` değerlerinin yüklenmesi için geliştirme sunucusunu `npm run dev` ile yeniden başlatın.
 
-Başka bir Firebase projesi kullanacaksanız `.firebaserc`, `.env.local` ve komuttaki `--project` değerini aynı projeye göre güncelleyin. Windows PowerShell yürütme politikası `npx` betiğini engelliyorsa `npx.cmd` kullanın.
+Başka bir Firebase projesi kullanacaksanız `.firebaserc`, `.env.local`, `package.json` içindeki `deploy:hosting` betiği ve komutlardaki `--project` değerini aynı projeye göre güncelleyin. Windows PowerShell yürütme politikası `npx` betiğini engelliyorsa `npx.cmd` kullanın.
 
 Firestore `words_en_tr` koleksiyonundaki kayıtların sahibi yalnız kendi kelimelerini değiştirebilir. Giriş yapan öğrenciler diğer kullanıcıların public kelimelerini Öneriler ekranında okuyabilir. İlk kurulan boş projede diğer öğrenciler kelime ekleyene kadar öneriler boş olacaktır. Kullanıcı profil belgeleri yalnız sahibi tarafından okunabilir. Önceki dil çiftine ait `words` koleksiyonuna dokunulmaz.
 
@@ -96,12 +98,18 @@ E2E testleri yerel 5173 sunucusunu ve bilgisayarda kurulu Google Chrome'u kullan
 
 Firebase kurulumu ayrıca iki geçici hesapla gerçek Authentication ve Firestore üzerinde doğrulandı: kayıt/giriş, oturumun korunması, kelime işlemleri, eşzamanlı tekrar engelleme, Türkçe arama, filtreler, sayfalama, kullanıcılar arası erişim sınırları ve 28 cevabın tek işlemde kaydedilmesi. Bu 16 canlı kontrol tamamlandıktan sonra geçici hesaplar ve test verileri temizlendi.
 
-## Yayına hazırlama
+## Canlı yayın ve güncelleme
+
+Uygulama [Firebase Hosting](https://vocabbuilder-yasin-kr.web.app) üzerinde yayımlanmıştır. `/register`, `/login` ve diğer uygulama rotaları doğrudan açılabilir; `firebase.json` içindeki SPA yönlendirmesi bu istekleri `index.html` dosyasına taşır.
+
+Canlı sitede 12 tarayıcı kontrolü geçti: 375/768/1440 px genişliklerde kayıt/giriş sayfalarının doğrudan açılması, gerçek hesap oluşturma, kelime ekleme, yenileme sonrası oturum ve veri kalıcılığı, çıkış/giriş ve kelime silme. Bu akışta konsol, sayfa veya uygulama isteği hatası görülmedi; geçici hesap ve test verileri temizlendi.
+
+Yayınlamak için proje erişimi olan Firebase hesabıyla CLI'a giriş yapın ve `.env.local` dosyasındaki Firebase web yapılandırmasını doldurun. `VITE_` değişkenleri üretim paketine **derleme sırasında** eklenir; değişikliklerden sonra yeniden derleyip yayımlayın.
 
 ```sh
-npm run build
+npm run deploy:hosting
 ```
 
-Üretim çıktısı `dist/` içindedir. Netlify için `netlify.toml`, Firebase Hosting için `firebase.json` SPA yönlendirmeleri hazırdır. Hosting ortamına Firebase web değişkenlerini ekleyin ve gerçek girişin kullanılacağı domain'i Firebase Authentication → Authorized domains listesine ekleyin.
+Bu komut TypeScript kontrolünü ve Vite derlemesini çalıştırır, ardından `dist/` içeriğini `vocabbuilder-yasin-kr` projesinin Hosting servisine gönderir. Firebase Authentication veya Firestore kurallarını değiştirmez. Windows PowerShell gerekirse `npm.cmd run deploy:hosting` kullanabilir.
 
-Bu çalışma yerel önizleme olarak hazırlanmıştır; henüz canlı hosta deploy edilmemiştir.
+GitHub'a push yapmak tek başına canlı siteyi güncellemez; kod değişikliklerinden sonra yayın komutu ayrıca çalıştırılmalıdır. Alternatif Netlify kurulumu için `netlify.toml` içindeki SPA yönlendirmesi de korunur.

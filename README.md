@@ -52,6 +52,8 @@ Arayüz sağlanan özel tasarım referanslarının web sürümüne göre hazırl
 
 CSS mobile-first yazılmıştır: 320 px'den itibaren akışkan, 375 px mobil, 768 px tablet, 1440 px masaüstü. Mobilde menü çekmeceye dönüşür, Sözlük kategori sütunu ve ilerleme yüzdesi gizlenir. Alıştırma alanları mobil/tablette alt alta, masaüstünde yan yanadır.
 
+Menü kısa ve yatay ekranlarda dikey kaydırılabilir; çizim bağlantıların altında kalır. 568×320 ve 667×375 dahil altı mobil/tablet boyutunda menü bağlantıları, çıkış düğmesine erişim ve kısa ekran kaydırması tarayıcı testiyle doğrulanır.
+
 Öğrenci, kitap ve çalışma kağıdı çizimleri özgün SVG bileşenleridir; tasarım ekran görüntülerinden alınmış raster dosyalar kullanılmaz. SVG'ler yüksek piksel yoğunluklarında keskin kalır ve ek retina bitmap yüklemesi gerektirmez. Firebase kodu gerektiğinde dinamik olarak yüklenir. Fontlar uygulamayla birlikte sunulur, üçüncü taraf font isteği yapılmaz.
 
 Teknik görevdeki yedi karakterli parola kuralı korunur: altı ardışık Latin harfi ve bir rakam. İngilizce kelime desenindeki kaçışlı yıldız yazım hatası, kelime/ifade kabul eden tam eşleşme olarak uygulanmıştır. İngilizce ve Türkçe alanlar en çok 64 karakterdir; Türkçe alan `ç, ğ, ı, İ, ö, ş, ü` harflerini destekler. Kullanıcının dil değişikliği isteği doğrultusunda veri modeli `en` ve `tr`, görev dili ise `en | tr` olarak uygulanmıştır.

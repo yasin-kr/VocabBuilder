@@ -486,6 +486,52 @@ test('auth, dictionary, recommend, training, and dialogs fit 320, 375, 768, and 
   }
 });
 
+test('navigation and logout stay reachable on short mobile and tablet screens', async ({
+  page,
+}) => {
+  await enterDemo(page);
+  for (const viewport of [
+    { width: 568, height: 320 },
+    { width: 667, height: 375 },
+    { width: 1024, height: 600 },
+    { width: 320, height: 568 },
+    { width: 375, height: 812 },
+    { width: 768, height: 1024 },
+  ]) {
+    await test.step(`Menu at ${viewport.width} × ${viewport.height}`, async () => {
+      await page.setViewportSize(viewport);
+      await page.getByRole('button', { name: 'Menüyü aç' }).click();
+      const menu = page.getByRole('dialog', { name: 'Menü', exact: true });
+      await expect(menu).toBeVisible();
+      await expect(menu.getByRole('button', { name: 'Pencereyi kapat' })).toBeInViewport({
+        ratio: 1,
+      });
+      for (const name of ['Sözlük', 'Öneriler', 'Alıştırma']) {
+        await expect(menu.getByRole('link', { name, exact: true })).toBeInViewport({ ratio: 1 });
+      }
+      const logout = menu.getByRole('button', { name: 'Çıkış yap', exact: true });
+      await expect(logout).toBeInViewport({ ratio: 1 });
+      await expectNoOverflow(page);
+      const navigationBounds = await menu.getByRole('navigation').boundingBox();
+      const illustrationBounds = await menu.getByRole('img').boundingBox();
+      expect(illustrationBounds!.y).toBeGreaterThanOrEqual(
+        navigationBounds!.y + navigationBounds!.height,
+      );
+      if (viewport.height <= 375) {
+        const bounds = await menu.boundingBox();
+        await page.mouse.move(bounds!.x + bounds!.width / 2, viewport.height / 2);
+        await page.mouse.wheel(0, 150);
+        await expect.poll(() => menu.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+      }
+      await logout.click();
+      await expect(page).toHaveURL(/\/login$/);
+      await expect(menu).toHaveCount(0);
+      await page.getByRole('button', { name: 'Demoyu dene' }).click();
+      await expect(page).toHaveURL(/\/dictionary$/);
+    });
+  }
+});
+
 test('mobile navigation and word dialogs close by Escape, backdrop, Cancel, and close button', async ({
   page,
 }) => {

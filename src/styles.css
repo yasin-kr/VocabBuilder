@@ -755,7 +755,12 @@ svg {
   margin: 0;
   padding: 16px;
   border-radius: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.menu-drawer[open] {
+  display: flex;
+  flex-direction: column;
 }
 .menu-drawer .modal-close {
   top: 16px;
@@ -763,6 +768,7 @@ svg {
 }
 .drawer-user {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
   align-items: center;
   padding-right: 28px;
@@ -779,10 +785,11 @@ svg {
 }
 .drawer-nav {
   display: flex;
+  flex-shrink: 0;
   align-items: flex-start;
   flex-direction: column;
   gap: 12px;
-  margin: 142px 0 0 12px;
+  margin: clamp(24px, calc(100dvh - 600px), 142px) 0 24px 12px;
 }
 .drawer-nav .nav-link {
   padding: 10px 16px;
@@ -796,10 +803,9 @@ svg {
   font-size: 14px;
 }
 .drawer-illustration {
-  position: absolute;
-  bottom: 20px;
+  align-self: center;
   width: 290px;
-  left: -46px;
+  margin: auto 0 4px;
   pointer-events: none;
 }
 .training-page {
@@ -1300,8 +1306,7 @@ svg {
   }
   .drawer-illustration {
     width: 360px;
-    bottom: 60px;
-    left: -30px;
+    margin-bottom: 40px;
   }
   .training-page {
     padding-top: 64px;

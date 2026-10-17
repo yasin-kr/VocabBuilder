@@ -290,6 +290,63 @@ test('training saves answers, skips blank entries, and persists word progress', 
   expect(progress).toEqual({ apple: 100, beautiful: 40 });
 });
 
+test('Enter advances training and saves the final answer without skipping words on key repeat', async ({
+  page,
+}) => {
+  await enterDemo(page);
+  const words = [
+    { en: 'apple', tr: 'elma' },
+    { en: 'pear', tr: 'armut' },
+    { en: 'cherry', tr: 'kiraz' },
+  ].map((word, index) => ({
+    ...word,
+    _id: `keyboard-word-${index}`,
+    category: 'noun',
+    progress: 0,
+    owner: 'demo-user',
+  }));
+  await page.evaluate(({ key, values }) => localStorage.setItem(key, JSON.stringify(values)), {
+    key: wordsKey,
+    values: words,
+  });
+  await page.goto('/training');
+  const answer = page.locator('#training-answer');
+  await expect(answer).toBeFocused();
+  await answer.fill('apple');
+  await answer.press('Shift+Enter');
+  await expect(answer).toHaveValue('apple\n');
+  await expect(page.getByText('Kelime 1 / 3', { exact: true })).toBeVisible();
+  await answer.press('Backspace');
+  await answer.dispatchEvent('keydown', { key: 'Enter', isComposing: true });
+  await expect(page.getByText('Kelime 1 / 3', { exact: true })).toBeVisible();
+
+  await page.keyboard.down('Enter');
+  await expect(page.getByText('Kelime 2 / 3', { exact: true })).toBeVisible();
+  await expect(answer).toHaveValue('');
+  await expect(answer).toBeFocused();
+  await page.keyboard.down('Enter');
+  await expect(page.getByText('Kelime 2 / 3', { exact: true })).toBeVisible();
+  await expect(answer).toHaveValue('');
+  await page.keyboard.up('Enter');
+
+  await answer.press('Enter');
+  await expect(page.getByText('Kelime 3 / 3', { exact: true })).toBeVisible();
+  await expect(answer).toBeFocused();
+  await answer.fill('cherry');
+  await answer.press('Enter');
+  const results = page.getByRole('dialog', { name: 'Tebrikler' });
+  await expect(results).toContainText('2 yanıttan 2 tanesi doğru');
+  await expect(results).toContainText('1 kelime atlandı');
+  const progress = await page.evaluate(
+    (key) =>
+      (JSON.parse(localStorage.getItem(key) ?? '[]') as Array<{ progress: number }>).map(
+        (word) => word.progress,
+      ),
+    wordsKey,
+  );
+  expect(progress).toEqual([25, 0, 25]);
+});
+
 for (const taskCount of [451, 901]) {
   test(`${taskCount} training tasks continue in sessions of at most 450 without replaying answers`, async ({
     page,

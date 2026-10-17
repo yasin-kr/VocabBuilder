@@ -174,6 +174,21 @@ export function TrainingPage() {
               }
               value={answer}
               onChange={(event) => setAnswer(event.target.value)}
+              onKeyDown={(event) => {
+                if (
+                  event.key !== 'Enter' ||
+                  event.shiftKey ||
+                  event.ctrlKey ||
+                  event.altKey ||
+                  event.metaKey ||
+                  event.nativeEvent.isComposing ||
+                  event.nativeEvent.keyCode === 229
+                )
+                  return;
+                event.preventDefault();
+                if (!event.repeat && !saving && results === null)
+                  event.currentTarget.form?.requestSubmit();
+              }}
               autoComplete="off"
               spellCheck={false}
               disabled={saving}

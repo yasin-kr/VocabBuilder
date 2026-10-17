@@ -56,26 +56,26 @@ Teknik görevdeki yedi karakterli parola kuralı korunur: altı ardışık Latin
 
 ## Firebase kurulumu
 
-Yeni değerlendirme kriteri gereği varsayılan veri sağlayıcısı Firebase'dir. Bir Firebase projesinin web yapılandırması eklenene kadar gerçek kayıt/giriş etkin değildir; demo alanı kullanılabilir.
+Varsayılan veri sağlayıcısı Firebase'dir. `.firebaserc` dosyası bu deponun varsayılan hedefini `vocabbuilder-yasin-kr` olarak tanımlar. Bu proje ve web uygulaması oluşturulmuş, **Email/Password** girişi etkinleştirilmiştir. `firebase.json`, giriş sağlayıcısını ve Frankfurt'taki (`europe-west3`) Firestore Standard `(default)` veritabanının yapılandırmasını içerir.
 
-1. Firebase Console'da bir proje ve web uygulaması oluşturun.
-2. Authentication → Sign-in method bölümünde **Email/Password** seçeneğini etkinleştirin.
-3. Cloud Firestore veritabanını oluşturun.
-4. `.env.example` dosyasını `.env.local` olarak kopyalayıp web uygulamasının yapılandırmasını doldurun. `.env.local` Git tarafından dışlanır.
-5. Firebase CLI ile giriş yapıp kuralları ve indeksleri ilgili projeye gönderin:
+1. Depoyu klonladıktan sonra `.env.example` dosyasını `.env.local` olarak kopyalayın ve projenin web uygulaması yapılandırmasını doldurun. `.env.local` Git tarafından dışlanır; başka bir bilgisayara klonlandığında ayrıca oluşturulmalıdır.
+2. Projede Cloud Firestore **Standard** sürümünde `(default)` veritabanı Frankfurt (`europe-west3`) bölgesinde kuruludur. Yeni bir projeye kurulumda `firebase.json` içindeki bölgeyi veritabanını oluşturmadan önce seçin.
+3. Firebase CLI ile proje erişimi olan hesabınıza giriş yapın; Authentication ayarlarını, Firestore kurallarını ve indekslerini gönderin:
 
 ```sh
-npx firebase-tools login
-npx firebase-tools deploy --only firestore:rules,firestore:indexes --project YOUR_PROJECT_ID
+npx -y firebase-tools@latest login
+npx -y firebase-tools@latest deploy --only "auth,firestore" --project vocabbuilder-yasin-kr
 ```
 
-6. İndeksler hazır olduğunda geliştirme sunucusunu yeniden başlatın.
+4. İndekslerin hazır olmasını bekleyin; ardından `.env.local` değerlerinin yüklenmesi için geliştirme sunucusunu `npm run dev` ile yeniden başlatın.
+
+Başka bir Firebase projesi kullanacaksanız `.firebaserc`, `.env.local` ve komuttaki `--project` değerini aynı projeye göre güncelleyin. Windows PowerShell yürütme politikası `npx` betiğini engelliyorsa `npx.cmd` kullanın.
 
 Firestore `words_en_tr` koleksiyonundaki kayıtların sahibi yalnız kendi kelimelerini değiştirebilir. Giriş yapan öğrenciler diğer kullanıcıların public kelimelerini Öneriler ekranında okuyabilir. İlk kurulan boş projede diğer öğrenciler kelime ekleyene kadar öneriler boş olacaktır. Kullanıcı profil belgeleri yalnız sahibi tarafından okunabilir. Önceki dil çiftine ait `words` koleksiyonuna dokunulmaz.
 
 Kategoriler oturum açıldığında `metadata/categories` belgesinden okunup Redux'a alınır; bu isteğe bağlı belge yoksa teknik görevdeki kategori listesi kullanılır. Belgeyi kullanacaksanız `values` alanına desteklenen kategori kodlarını (`verb`, `noun` vb.) içeren bir dizi koyun; uygulama bunları Türkçe adlarıyla gösterir. Aynı kelimenin eşzamanlı eklenmesini önleyen kişisel `wordKeysEnTr` kayıtları, kelimelerle birlikte atomik transaction içinde yönetilir; [Firestore işlem sonrası kuralları](https://firebase.google.com/docs/reference/rules/rules.firestore) bu tutarlılığı denetler.
 
-Sayfalama `limit`, `startAfter` ve sunucu tarafında count aggregation kullanır. Alt dize araması kayıtlardaki normalize edilmiş arama parçalarıyla yapılır. Uzak bir sayfaya ilk kez atlamak önceki sayfaların cursor'larını okumayı gerektirebilir. Firestore kuralları ve indeksler canlı bir Firebase projesinde ayrıca doğrulanmalıdır.
+Sayfalama `limit`, `startAfter` ve sunucu tarafında count aggregation kullanır. Alt dize araması kayıtlardaki normalize edilmiş arama parçalarıyla yapılır. Uzak bir sayfaya ilk kez atlamak önceki sayfaların cursor'larını okumayı gerektirebilir. Yeni bir Firebase projesine kurulum yapıldığında kurallar ve indeksler o projede ayrıca doğrulanmalıdır.
 
 Firebase web config, istemci uygulamasının açık yapılandırmasıdır; servis hesabı veya admin anahtarı koymayın. Erişimi Firestore güvenlik kuralları sınırlar.
 
@@ -93,6 +93,8 @@ npm run test:e2e
 ```
 
 E2E testleri yerel 5173 sunucusunu ve bilgisayarda kurulu Google Chrome'u kullanır. Her test izole tarayıcı bağlamındaki demo verileriyle çalışır; canlı hesabı veya uzaktaki kelimeleri değiştirmez. Testler konsol hatalarını, temel akışları ve 320/375/768/1440 px taşmalarını denetler.
+
+Firebase kurulumu ayrıca iki geçici hesapla gerçek Authentication ve Firestore üzerinde doğrulandı: kayıt/giriş, oturumun korunması, kelime işlemleri, eşzamanlı tekrar engelleme, Türkçe arama, filtreler, sayfalama, kullanıcılar arası erişim sınırları ve 28 cevabın tek işlemde kaydedilmesi. Bu 16 canlı kontrol tamamlandıktan sonra geçici hesaplar ve test verileri temizlendi.
 
 ## Yayına hazırlama
 

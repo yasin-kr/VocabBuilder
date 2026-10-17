@@ -20,7 +20,7 @@ service cloud.firestore {
       && word.tr is string && word.tr.size() > 0 && word.tr.size() <= 64
       && word.tr.matches("[A-Za-zÇĞİÖŞÜçğıöşü]+(['’ʼ -][A-Za-zÇĞİÖŞÜçğıöşü]+)*")
       && word.enNormalized is string && word.enNormalized.size() <= 64
-      && word.enNormalized == word.en.replace('[’ʼ]', "'").lower()
+      && word.enNormalized == word.en.replace("[’ʼ]", "'").lower()
       && word.searchTokens is list && word.searchTokens.size() <= 4160
       && word.category in [
         'verb', 'participle', 'noun', 'adjective', 'pronoun', 'numerals',

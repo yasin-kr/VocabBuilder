@@ -9,4 +9,6 @@ coverage/
 playwright-report/
 test-results/
 .local/
+.firebase/
+firebase-debug.log*
 .DS_Store

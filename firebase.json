@@ -1,5 +1,13 @@
 {
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
+  },
   "firestore": {
+    "database": "(default)",
+    "edition": "standard",
+    "location": "europe-west3",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { errorMessage, useApp } from '../app-context';
 import { api } from '../services/api';
 import type { Word } from '../types';
 import { Icon } from '../components/Icon';
 import { Illustration } from '../components/Illustration';
 import { WordModal } from '../components/WordModal';
-import { capitalize, categoryLabel } from '../lib/locale';
+import { capitalize } from '../lib/locale';
 import { WordsTable } from '../components/WordsTable';
 import { Pagination } from '../components/Pagination';
+import { Dashboard } from '../components/Dashboard';
 
 export function WordsPage({ scope }: { scope: 'own' | 'all' }) {
   const { categories, notify, revision, refresh } = useApp();
@@ -113,91 +114,23 @@ export function WordsPage({ scope }: { scope: 'own' | 'all' }) {
   return (
     <main id="main-content" className="container words-page">
       <h1 className="sr-only">{scope === 'own' ? 'Sözlük' : 'Öneriler'}</h1>
-      <section className="dashboard" aria-label="Kelime arayın ve öğrenme sürecinizi yönetin">
-        <div className="filters">
-          <div className="search-field">
-            <label className="sr-only" htmlFor="word-search">
-              Kelime ara
-            </label>
-            <input
-              id="word-search"
-              type="search"
-              placeholder="Kelime ara"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              autoComplete="off"
-            />
-            <Icon name="search" size={22} />
-          </div>
-          <div className="filter-category">
-            <div className="select-wrap">
-              <label className="sr-only" htmlFor="category-filter">
-                Kategoriler
-              </label>
-              <select
-                id="category-filter"
-                value={category}
-                onChange={(event) => {
-                  setCategory(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">Kategoriler</option>
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {categoryLabel(item)}
-                  </option>
-                ))}
-              </select>
-              <Icon name="chevron-down" size={20} />
-            </div>
-            {category === 'verb' && (
-              <fieldset className="verb-options">
-                <legend className="sr-only">Fiil türüne göre filtrele</legend>
-                <label>
-                  <input
-                    type="radio"
-                    checked={!irregular}
-                    onChange={() => {
-                      setIrregular(false);
-                      setPage(1);
-                    }}
-                    name="filter-verb"
-                  />
-                  Düzenli
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    checked={irregular}
-                    onChange={() => {
-                      setIrregular(true);
-                      setPage(1);
-                    }}
-                    name="filter-verb"
-                  />
-                  Düzensiz
-                </label>
-              </fieldset>
-            )}
-          </div>
-        </div>
-        <div className="dashboard-tools">
-          <p className="statistics">
-            Öğrenilecek: <strong>{totalCount}</strong>
-          </p>
-          <div className="dashboard-actions">
-            {scope === 'own' && (
-              <button className="text-button" onClick={() => setModal('add')}>
-                Kelime ekle <Icon name="plus" size={20} />
-              </button>
-            )}
-            <Link className="text-button" to="/training">
-              Alıştırma yap <Icon name="arrow-right" size={20} />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Dashboard
+        categories={categories}
+        search={search}
+        category={category}
+        irregular={irregular}
+        totalCount={totalCount}
+        onSearchChange={setSearch}
+        onCategoryChange={(value) => {
+          setCategory(value);
+          setPage(1);
+        }}
+        onIrregularChange={(value) => {
+          setIrregular(value);
+          setPage(1);
+        }}
+        onAddWord={scope === 'own' ? () => setModal('add') : undefined}
+      />
       <div aria-busy={loading} className="words-content">
         {error ? (
           <div className="empty-state" role="alert">

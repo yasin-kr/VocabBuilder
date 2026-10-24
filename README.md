@@ -40,6 +40,8 @@ Türkçe demo kayıtları `vocabbuilder.demo.words.en-tr.v1` anahtarında tutulu
 | `/recommend`  | Diğer öğrencilerin kelimeleri ve sözlüğe ekleme     |
 | `/training`   | Çift yönlü çeviri görevleri, kaydetme ve sonuçlar   |
 
+Sözlük ve Öneriler sayfaları ortak [Dashboard bileşenini](src/components/Dashboard.tsx) kullanır. Bileşen arama, kategori/fiil türü filtreleri, öğrenilecek kelime sayısı ve alıştırma bağlantısını içerir; kelime ekleme düğmesi yalnız Sözlük sayfasında gösterilir. Değerleri ve işlem callback'lerini props üzerinden alır; veri istekleri ve sayfalama sayfa tarafından yönetilir.
+
 Arama 300 ms debounce ile çalışır ve baştaki/sondaki boşlukları temizler. Kategori filtresi, fiiller için düzenli/düzensiz seçimi ve sunucuda sayfalama desteklenir. Modallar kapatma düğmesi, İptal, Escape ve arka plana tıklama ile kapanır; doğal `dialog` odağı içeride tutar. Hatalı isteklerde girilmiş form değerleri korunur ve bildirim gösterilir.
 
 Alıştırmalarda boş bırakılan cevaplar gönderilmez. İlerleme yanıtlanan görevlerin toplam görevlere oranıdır. Firebase/demo öğrenme puanı doğru cevapta 25 artar, yanlış cevapta 10 azalır ve 0–100 arasında tutulur. Tam öğrenilmiş kelimeler alıştırmalardan çıkarılır. Arama ve cevap kontrolü dile uygun büyük/küçük harf dönüşümü kullanır: Türkçede `I/ı` ve `İ/i`, İngilizcede `I/i` eşleşir.

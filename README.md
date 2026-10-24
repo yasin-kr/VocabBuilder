@@ -106,6 +106,15 @@ E2E testleri yerel 5173 sunucusunu ve bilgisayarda kurulu Google Chrome'u kullan
 
 Firebase kurulumu ayrıca iki geçici hesapla gerçek Authentication ve Firestore üzerinde doğrulandı: kayıt/giriş, oturumun korunması, kelime işlemleri, eşzamanlı tekrar engelleme, Türkçe arama, filtreler, sayfalama, kullanıcılar arası erişim sınırları ve 28 cevabın tek işlemde kaydedilmesi. Bu 16 canlı kontrol tamamlandıktan sonra geçici hesaplar ve test verileri temizlendi.
 
+### 24 Ekim 2026 teslim kontrolü
+
+- 82 birim testi ve 14 Playwright tarayıcı testi geçti. Tarayıcı testleri konsol hatalarını, kelime işlemlerini, filtreleri, sayfalamayı, Enter kısayolunu, modalları ve 320/375/768/1440 px görünümü kapsar.
+- 375/768/1440 px boyutlarında ana sayfalar, kelime ekleme/düzenleme modalları, sonuç ekranı, boş alıştırma ekranı ve mobil/tablet menüsünden alınan 29 render edilmiş HTML belgesi, [HTML-Validate](https://html-validate.org/usage/cli.html) 11.17.0 aracının `standard,a11y` kurallarından hatasız geçti. Form göndermeyen düğmeler açık `type="button"` kullanır; dairesel ilerleme göstergesi erişilebilir bir yerel `<progress>` öğesiyle sunulur.
+- Gerçek Firebase üzerinde iki geçici hesapla 16 kontrol yeniden geçti: kayıt/giriş, oturum kalıcılığı, kelime işlemleri, öneriler, filtreler, sunucu sayfalaması, kullanıcı erişim sınırları ve 28 alıştırma yanıtının tek transaction ile kaydı. Test hesapları ve verileri temizlendi.
+- Son yayımlanan sürümde 12 gerçek kullanıcı kontrolü geçti: kayıt/giriş sayfaları, hesap oluşturma, kelime ekleme/silme, oturum ve veri kalıcılığı. Konsol veya uygulama hatası görülmedi. Firestore SDK'nın oturum değişiminde kapattığı `Listen/channel` istekleri ağ hatasından ayrı değerlendirildi; geçici hesap ve veriler temizlendi.
+- Görsel inceleme sağlanan mobil/tablet/masaüstü referans ekran görüntüleriyle yapıldı. Türkçe metinler, Türkçe bayrağı, demo alanı ve istenen kart kenarlığı/gölgesi bilinçli uyarlamalardır. Figma dosyasına doğrudan erişim sağlanamadığından katman bazlı veya piksel düzeyinde birebir eşleşme iddiası yoktur.
+- TypeScript/üretim derlemesi ve Prettier kontrolü başarılıdır. Vite'ın Firebase paketi için verdiği 500 kB uyarısı bir derleme hatası değildir; Firebase kodu gerektiğinde yüklenir.
+
 ## Canlı yayın ve güncelleme
 
 Uygulama [Firebase Hosting](https://vocabbuilder-yasin-kr.web.app) üzerinde yayımlanmıştır. `/register`, `/login` ve diğer uygulama rotaları doğrudan açılabilir; `firebase.json` içindeki SPA yönlendirmesi bu istekleri `index.html` dosyasına taşır.

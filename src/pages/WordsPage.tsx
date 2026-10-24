@@ -138,6 +138,7 @@ export function WordsPage({ scope }: { scope: 'own' | 'all' }) {
             <h2>Kelimeleriniz yüklenemedi</h2>
             <p>{error}</p>
             <button
+              type="button"
               className="button button-primary"
               onClick={() => setRetry((value) => value + 1)}
             >
@@ -179,7 +180,11 @@ export function WordsPage({ scope }: { scope: 'own' | 'all' }) {
                   : 'Diğer kullanıcıların paylaştığı yeni kelimeler burada görünecek.'}
             </p>
             {scope === 'own' && !keyword && !category && (
-              <button className="button button-primary" onClick={() => setModal('add')}>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={() => setModal('add')}
+              >
                 Kelime ekle <Icon name="plus" size={18} />
               </button>
             )}

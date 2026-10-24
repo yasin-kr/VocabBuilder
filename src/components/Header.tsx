@@ -60,10 +60,16 @@ export function Header() {
               <span className="avatar">
                 <Icon name="user" size={24} />
               </span>
-              <button className="text-button desktop-logout" onClick={signOut} disabled={leaving}>
+              <button
+                type="button"
+                className="text-button desktop-logout"
+                onClick={signOut}
+                disabled={leaving}
+              >
                 Çıkış yap <Icon name="arrow-right" size={20} />
               </button>
               <button
+                type="button"
                 className="icon-button menu-toggle"
                 aria-label="Menüyü aç"
                 aria-expanded={menuOpen}
@@ -88,7 +94,7 @@ export function Header() {
           </div>
           <nav aria-label="Mobil menü" className="drawer-nav">
             {navigation}
-            <button className="text-button" onClick={signOut} disabled={leaving}>
+            <button type="button" className="text-button" onClick={signOut} disabled={leaving}>
               Çıkış yap <Icon name="arrow-right" size={20} />
             </button>
           </nav>

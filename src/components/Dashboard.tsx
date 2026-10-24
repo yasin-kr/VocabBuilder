@@ -92,7 +92,7 @@ export function Dashboard({
         </p>
         <div className="dashboard-actions">
           {onAddWord && (
-            <button className="text-button" onClick={onAddWord}>
+            <button type="button" className="text-button" onClick={onAddWord}>
               Kelime ekle <Icon name="plus" size={20} />
             </button>
           )}

@@ -109,6 +109,7 @@ function SessionProvider({ children }: { children: ReactNode }) {
             <Icon name={toast.kind === 'error' ? 'alert' : 'check'} size={20} />
             <span>{toast.message}</span>
             <button
+              type="button"
               className="icon-button"
               aria-label="Bildirimi kapat"
               onClick={() => setToasts((items) => items.filter((item) => item.id !== toast.id))}

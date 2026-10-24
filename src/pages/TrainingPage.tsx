@@ -101,7 +101,11 @@ export function TrainingPage() {
       <main id="main-content" className="container empty-state" role="alert">
         <h1>Alıştırma yüklenemedi</h1>
         <p>{error}</p>
-        <button className="button button-primary" onClick={() => setRetry((value) => value + 1)}>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={() => setRetry((value) => value + 1)}
+        >
           Tekrar dene
         </button>
       </main>
@@ -265,11 +269,15 @@ export function TrainingPage() {
             </div>
           </div>
           {hasNextSession && (
-            <button className="button button-light" onClick={nextSession}>
+            <button type="button" className="button button-light" onClick={nextSession}>
               Sonraki alıştırma <Icon name="arrow-right" size={20} />
             </button>
           )}
-          <button className="button button-light" onClick={() => navigate('/dictionary')}>
+          <button
+            type="button"
+            className="button button-light"
+            onClick={() => navigate('/dictionary')}
+          >
             Sözlüğe dön <Icon name="arrow-right" size={20} />
           </button>
         </Modal>

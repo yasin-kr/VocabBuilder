@@ -12,15 +12,23 @@ export function Progress({
   const percentage = Math.min(100, Math.max(0, value));
   return (
     <span className={`progress ${training ? 'progress-training' : ''}`}>
-      {!training && <span className="progress-number">{Math.round(percentage)}%</span>}
+      {!training && (
+        <span className="progress-number" aria-hidden="true">
+          {Math.round(percentage)}%
+        </span>
+      )}
+      <progress
+        className="sr-only"
+        value={percentage}
+        max={100}
+        aria-label={training ? 'Alıştırma ilerlemesi' : 'Kelime öğrenme ilerlemesi'}
+      >
+        {label}
+      </progress>
       <span
         className="progress-ring"
         style={{ '--progress': `${percentage}%` } as CSSProperties}
-        role="progressbar"
-        aria-label={training ? 'Alıştırma ilerlemesi' : 'Kelime öğrenme ilerlemesi'}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(percentage)}
+        aria-hidden="true"
       >
         <span>{label}</span>
       </span>

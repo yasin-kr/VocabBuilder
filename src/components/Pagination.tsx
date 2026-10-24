@@ -21,10 +21,16 @@ export function Pagination({
   ].sort((a, b) => a - b);
   return (
     <nav className="pagination" aria-label="Kelime sayfaları">
-      <button aria-label="İlk sayfa" disabled={disabled || page === 1} onClick={() => onChange(1)}>
+      <button
+        type="button"
+        aria-label="İlk sayfa"
+        disabled={disabled || page === 1}
+        onClick={() => onChange(1)}
+      >
         <Icon name="chevrons-left" size={16} />
       </button>
       <button
+        type="button"
         aria-label="Önceki sayfa"
         disabled={disabled || page === 1}
         onClick={() => onChange(page - 1)}
@@ -37,6 +43,7 @@ export function Pagination({
             <span className="pagination-ellipsis">…</span>
           )}
           <button
+            type="button"
             disabled={disabled}
             aria-label={`Sayfa ${value}`}
             aria-current={value === page ? 'page' : undefined}
@@ -47,6 +54,7 @@ export function Pagination({
         </span>
       ))}
       <button
+        type="button"
         aria-label="Sonraki sayfa"
         disabled={disabled || page === totalPages}
         onClick={() => onChange(page + 1)}
@@ -54,6 +62,7 @@ export function Pagination({
         <Icon name="chevron-right" size={16} />
       </button>
       <button
+        type="button"
         aria-label="Son sayfa"
         disabled={disabled || page === totalPages}
         onClick={() => onChange(totalPages)}

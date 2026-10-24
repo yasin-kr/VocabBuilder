@@ -89,6 +89,7 @@ export function WordsTable({
           scope === 'own' ? (
             <div className="word-actions">
               <button
+                type="button"
                 className="icon-button actions-toggle"
                 aria-label={`${row.original.en} için işlemler`}
                 data-word-id={row.original._id}
@@ -102,6 +103,7 @@ export function WordsTable({
               {openId === row.original._id && (
                 <div className="actions-popover">
                   <button
+                    type="button"
                     onClick={() => {
                       setOpenId(null);
                       onEdit(row.original);
@@ -111,6 +113,7 @@ export function WordsTable({
                     Düzenle
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setOpenId(null);
                       onDelete(row.original);
@@ -124,6 +127,7 @@ export function WordsTable({
             </div>
           ) : (
             <button
+              type="button"
               className="text-button add-to-dictionary"
               onClick={() => onAdd(row.original)}
               disabled={busyId === row.original._id || addedIds.has(row.original._id)}
